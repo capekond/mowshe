@@ -1,24 +1,32 @@
 from flask import Flask, jsonify, request
-
+from webargs import flaskparser, fields
 from dominate import document
 from dominate.tags import *
+from forms import FormAccount
 
 app = Flask(__name__)
-
 
 @app.route('/')
 def hello_world():  # put application's code here
 
     with document(title='hello') as doc:
-        h1('Hello Word')
-        h2('Nice to see you')
+        h1('Mowshe Mir')
+    return
+
+
+@app.route('/account', methods=['GET'])
+def account():
+
+
+    with document(title='hello') as doc:
+        h1('Mowshe Mir email')
+    acc_form = FormAccount()  # will register fields called 'username' and 'email'.
+    if acc_form.validate_on_submit():
+        pass
+    else:
+        pass
+
     return doc.render()
-
-
-@app.route('/load', methods=['GET'])
-def load():
-    incomes = [{'description': 'load', 'amount': 1000}]
-    return jsonify(incomes), 200
 
 
 @app.route('/sqr', methods=['POST'])
