@@ -1,8 +1,8 @@
 from flask import Flask, jsonify, request
-from webargs import flaskparser, fields
 from dominate import document
 from dominate.tags import *
-from forms import FormAccount
+from app.forms import FormAccount
+from flask import render_template, flash, redirect
 
 app = Flask(__name__)
 
@@ -11,22 +11,20 @@ def hello_world():  # put application's code here
 
     with document(title='hello') as doc:
         h1('Mowshe Mir')
-    return
+    return  doc.render()
 
 
-@app.route('/account', methods=['GET'])
+@app.route('/account', methods=['GET', 'POST'])
 def account():
+    form = FormAccount()
+    if form.validate_on_submit():
+        flash(f'Email pridan pro  {form.username.data}, email = {form.email.data}')
+        return redirect('/')
+    return render_template('account.html', title='Pridej ucet', form=form)
 
 
-    with document(title='hello') as doc:
-        h1('Mowshe Mir email')
-    acc_form = FormAccount()  # will register fields called 'username' and 'email'.
-    if acc_form.validate_on_submit():
-        pass
-    else:
-        pass
 
-    return doc.render()
+
 
 
 @app.route('/sqr', methods=['POST'])
