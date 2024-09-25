@@ -1,24 +1,39 @@
 from flask import Flask, jsonify, request
-
 from dominate import document
 from dominate.tags import *
+from app.forms import FormAccount, NameForm
+from flask import render_template, flash, redirect
+from flask import Flask, render_template, redirect, url_for
+from flask_bootstrap import Bootstrap5
+
+from flask_wtf import FlaskForm, CSRFProtect
+from wtforms import StringField, SubmitField
+from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
-
+app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
+bootstrap = Bootstrap5(app)
+csrf = CSRFProtect(app)
 
 @app.route('/')
 def hello_world():  # put application's code here
 
     with document(title='hello') as doc:
-        h1('Hello Word')
-        h2('Nice to see you')
-    return doc.render()
+        h1('Mowshe Mir')
+    return  doc.render()
 
 
-@app.route('/load', methods=['GET'])
-def load():
-    incomes = [{'description': 'load', 'amount': 1000}]
-    return jsonify(incomes), 200
+@app.route('/account', methods=['GET', 'POST'])
+def account():
+    form = FormAccount()
+    if form.validate_on_submit():
+        flash(f'Email pridan pro  {form.username.data}, email = {form.email.data}')
+        return redirect('/')
+    return render_template('account.html', title='Pridej ucet', form=form)
+
+
+
+
 
 
 @app.route('/sqr', methods=['POST'])
@@ -26,6 +41,19 @@ def sqr():
     number = request.json['number']
     res = [{'result': number * number}]
     return jsonify(res), 200
+
+@app.route('/actor', methods=['GET', 'POST'])
+def actor():
+    names = ['Pepa', "Fanda, 'Tonda"]
+    form = NameForm()
+    message = ""
+    if form.validate_on_submit():
+        name = form.name.data
+        if name.lower() in names:
+            message = "That actor is in our database."
+        else:
+            message = "That actor is not in our database."
+    return render_template('index.html', names=names, form=form, message=message)
 
 
 if __name__ == '__main__':
