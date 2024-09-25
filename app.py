@@ -12,7 +12,7 @@ from wtforms.validators import DataRequired, Length
 
 app = Flask(__name__)
 app.secret_key = 'tO$&!|0wkamvVia0?n$NqIRVWOG'
-bootstrap = Bootstrap5(app)
+bootstrap = Bootstrap5()
 csrf = CSRFProtect(app)
 
 @app.route('/')
@@ -33,7 +33,10 @@ def account():
 
 
 
-
+@app.route('/rest-api', methods=['GET'])
+def rest_api():
+    res = [{'result': 'rest api'}, {'count' : 10}]
+    return jsonify(res), 200
 
 
 @app.route('/sqr', methods=['POST'])
